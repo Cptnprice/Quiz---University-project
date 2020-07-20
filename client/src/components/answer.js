@@ -4,17 +4,17 @@ class Answer extends React.Component {
   render() {
     const {
       onHandleAnswer,
-      questionId,
+      question,
       choice: { _id, value }
     } = this.props;
     return (
       <li key={_id}>
         <input
           type="radio"
-          name={`answer${questionId}`}
+          name={`answer${question._id}`}
           value={_id}
           style={{ marginRight: "10px" }}
-          onClick={() => onHandleAnswer(questionId, _id)}
+          onClick={() => onHandleAnswer(question, _id)}
         />
         {value}
       </li>

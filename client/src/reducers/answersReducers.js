@@ -9,7 +9,7 @@ const answersReducer = (state = initialState, action) => {
   switch (type) {
     case SET_ANSWER:
       let answers = [...state.answers];
-      let index = answers.findIndex(x => x.question === payload.question);
+      let index = answers.findIndex(x => x.question === payload.question._id);
       if (index !== -1) {
         answers[index] = payload;
       } else {

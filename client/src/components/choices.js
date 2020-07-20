@@ -2,13 +2,13 @@ import React from "react";
 import Answer from "./answer";
 
 const Choices = props => {
-  const { questionId, choices, handleAnswer } = props;
+  const { question, choices, handleAnswer } = props;
   return (
-    <ul key={questionId}>
+    <ul key={question._id}>
       {choices.map(choice => (
         <Answer
           key={choice._id}
-          questionId={questionId}
+          question={question}
           choice={choice}
           onHandleAnswer={handleAnswer}
         />

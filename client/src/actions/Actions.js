@@ -44,9 +44,8 @@ export const loadCategories = () => async dispatch => {
 
 export const setAnswer = (question, answerValue) => async dispatch => {
   try {
-    const questions = await getQuestions();
-    const category = questions.filter(x => x._id === question)[0].category.title;
-    const o = await getAnswer(question);
+    const category = question.category.title;
+    const o = await getAnswer(question._id);
     dispatch({
       type: SET_ANSWER,
       payload: { question: question, category: category, answer: o.answer === answerValue }

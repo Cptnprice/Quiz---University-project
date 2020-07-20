@@ -126,7 +126,7 @@ class Questions extends Component {
                       <Card.Text> {q.question}</Card.Text>
                       <Choices
                         key={this.state.restart}
-                        questionId={q._id}
+                        question={q}
                         choices={q.choices}
                         handleAnswer={this.handleAnswer}
                       />
