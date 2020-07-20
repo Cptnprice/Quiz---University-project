@@ -29,18 +29,9 @@ class EditQuestion extends React.Component{
         this.setState({choices : choices});
     }
 
-    idHandler = () => {
-        let ids = this.props.questionsReducer.questions.map(x => x.id);
-        let id = ids.length === 0 ? 1 : Number(ids[ids.length - 1]) + 1;
-        this.setState({id : id});
-    }
-
     handleChange = (event) => {
         const {name, value} = event.target;
-        if (!this.state.id){
-            this.idHandler();
-        }
-        else if (['1','2','3','4'].includes(name)){
+        if (['1','2','3','4'].includes(name)){
             let tempData = {
                     id : Number(name),
                     value : value
