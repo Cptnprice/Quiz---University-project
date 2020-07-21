@@ -2,12 +2,15 @@ import React from 'react';
 import { connect } from "react-redux";
 import { loadQuestions, loadCategories } from "../actions/Actions";
 import { withRouter } from 'react-router';
+import { cloneDeep } from 'lodash';
 
 class EditCategory extends React.Component{
     state = {
         id : this.props.id,
         title : this.props.title 
     }
+
+    tempState = cloneDeep(this.state);
 
     async componentDidMount() {
         try {
@@ -31,6 +34,7 @@ class EditCategory extends React.Component{
     }
 
     onBackClick = () => {
+        this.setState(this.tempState);
         this.props.history.push('/');
     };
 

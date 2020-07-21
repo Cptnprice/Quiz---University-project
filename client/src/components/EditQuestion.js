@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { loadQuestions, loadQuestionsByCategory, loadCategories } from "../actions/Actions";
 import { withRouter } from 'react-router';
+import { cloneDeep } from 'lodash';
 
 class EditQuestion extends React.Component{
     state = {
@@ -11,6 +12,8 @@ class EditQuestion extends React.Component{
         answer : this.props.answer,
         category : this.props.category 
     }
+
+    tempState = cloneDeep(this.state);
 
     async componentDidMount() {
         try {
@@ -25,7 +28,6 @@ class EditQuestion extends React.Component{
         let o = choices[tempData.id-1];
         o.value = tempData.value;
         choices[tempData.id-1] = o;
-        console.log("choices : ", choices);
         this.setState({choices : choices});
     }
 
@@ -49,11 +51,11 @@ class EditQuestion extends React.Component{
 
     handleEdit = async (event) => {
         event.preventDefault();
-        console.log("before : ", this.state)
         this.props.onEdit(this.state);
     }
 
-    onBackClick = (categories,title) => {
+    onBackClick = (title) => {
+        this.setState(this.tempState);
         this.props.history.push("/" + title);
     };
 
@@ -142,7 +144,7 @@ class EditQuestion extends React.Component{
             </div>
             <button type="submit" className="btn btn-primary">Edit</button>
             <br></br>
-            <button className="btn btn-info btn-sm mt-2" onClick={() => this.onBackClick(this.props.categoriesReducer.categories,this.props.category)}>
+            <button className="btn btn-info btn-sm mt-2" onClick={() => this.onBackClick(this.props.category)}>
                 Go back
             </button>
     </form>
@@ -151,7 +153,6 @@ class EditQuestion extends React.Component{
 }
 
 function mapStateToProps(state){
-    // console.log("state : ", state);
     return state;
   }
   

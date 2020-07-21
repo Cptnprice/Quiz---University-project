@@ -89,14 +89,12 @@ class Questions extends Component {
         })
     })
     const body = await response.text();
-    console.log(body);
     this.setState({edit : 0});
     this.fetchData();
 }
 
   handleEdit = async (id,question,choices,answer,answerIndex,category) => {
     this.setState({ edit : 1, id: id, question : question, choices : choices, answer : answer, answerIndex : answerIndex, category : category})
-    console.log(this.state);
   }
 
   render() {
@@ -163,7 +161,6 @@ class Questions extends Component {
 }
 
 function mapStateToProps(state) {
-  //console.log("state", state);
   return state;
 }
 

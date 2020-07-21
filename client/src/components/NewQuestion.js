@@ -4,7 +4,6 @@ import { loadQuestions, loadCategories } from "../actions/Actions";
 
 class NewQuestion extends React.Component{
     state = {
-        // id : 0,
         question : '',
         choices : [],
         answer : {},
@@ -73,7 +72,6 @@ class NewQuestion extends React.Component{
         })
         const body = await response;
         this.setState({
-            id : 0,
             question : '',
             choices : [],
             answer : {},
@@ -165,7 +163,6 @@ class NewQuestion extends React.Component{
 
 
 function mapStateToProps(state){
-    // console.log("state : ", state);
     return state;
 }
 

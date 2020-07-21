@@ -22,7 +22,6 @@ class NewCategory extends React.Component{
             body : JSON.stringify({title : this.state.title})
         })
         const body = await response.text();
-        console.log(body);
         this.setState({
             restart : Math.random()
         })
