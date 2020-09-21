@@ -1,9 +1,22 @@
 const express = require("express")
 cors = require("cors")
 
-var questionModel = require("../models/Question");
-var answerModel = require("../models/Answer");
-var categoryModel = require("../models/Category");
+var answerController = require("../Controllers/AnswerController");
+var categoryController = require("../Controllers/CategoryController");
+var questionController = require("../Controllers/QuestionController");
+
+let getAnswer = answerController.getAnswer;
+
+let getCategories = categoryController.getCategories;
+let addNewCategory = categoryController.addNewCategory;
+let deleteCategory = categoryController.deleteCategory;
+let editCategory = categoryController.editCategory;
+
+let getQuestions = questionController.getQuestions;
+let getQuestion = questionController.getQuestion;
+let addNewQuestion = questionController.addNewQuestion;
+let deleteQuestion = questionController.deleteQuestion;
+let editQuestion = questionController.editQuestion;
 
 var mongoose = require('mongoose');
 
@@ -22,159 +35,43 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended : true }))
 
 app.get("/questions", (req, res) => {
-  questionModel.find({}).
-                populate('category').
-                populate('choices').
-                populate('answer').
-                exec(function(err, questions){
-                  if (err){
-                    console.log(err);
-                  }
-                  else{
-                    res.json(questions);
-                  }
-                })
+  getQuestions(req, res);
 })
 
 app.get("/questions/:id", (req, res) => {
-  questionModel.find({category : req.params.id}).
-                populate('category').
-                populate('choices').
-                populate('answer').
-                exec(function(err, questions){
-                  if (err){
-                    console.log(err);
-                  }
-                  else{
-                    res.json(questions);
-                  }
-                })
+  getQuestion(req, res);
 })
 
 app.post("/add-new-question", (req, res) => {
-  var newQuestion = new questionModel({
-    question : req.body.question.question
-  });
-
-  req.body.question.choices.forEach(choice => {
-    var newAnswer = new answerModel({
-      value : choice.value,
-      question : newQuestion._id
-    });
-
-    newAnswer.save(function(err){
-      if (err){
-        console.log(err);
-      }
-    });
-
-    newQuestion.choices.push(newAnswer);
-  })
-
-  var newCorrectAnswer = newQuestion.choices.filter(x => x.value == req.body.question.answer.value)[0];
-  newQuestion.answer = newCorrectAnswer;
-
-  var category = categoryModel.findOne({title : req.body.question.category});
-  category.exec(function(err,category){
-    if (err){
-      console.log(err);
-    }
-    else{
-      category.questions.push(newQuestion);
-      category.save();
-      newQuestion.category = category;
-      newQuestion.save(function(err){
-        if (err){
-          console.log(err);
-        }
-      });
-    }
-  });
-
-  res.sendStatus(200);
+  addNewQuestion(req, res);
 })
 
 app.get("/answer/:id", (req, res) => {
-  questionModel.findOne({_id : req.params.id}).exec(function(err,answer){
-    if (err){
-      console.log(err);
-    }
-    else{
-      res.json(answer);
-    }
-  });
+  getAnswer(req, res);
 })
 
 app.post("/add-new-category", (req, res) => {
-  var newCategory = new categoryModel({
-    title : req.body.title
-  });
-  newCategory.save();
-  res.send(newCategory);
+  addNewCategory(req, res);
 })
 
 app.delete("/delete-category", (req, res) => {
-  categoryModel.deleteOne({_id : req.body.id}, function(err){
-    if (err){
-      console.log(err);
-    }
-  })
-  res.sendStatus(200);
+  deleteCategory(req, res);
 })
 
 app.delete("/delete-question", (req, res) => {
-  let id = req.body.id;
-  questionModel.deleteOne({_id : id}, function(err){
-    if (err){
-      console.log(err);
-    }
-  })
-  res.sendStatus(200);
+  deleteQuestion(req, res);
 })
 
 app.post("/edit-category", (req, res) => {
-  let id = req.body.id;
-  let title = req.body.title;
-  categoryModel.updateOne({_id : id}, {title : title}, function(err,res){
-    if (err){
-      console.log(err);
-    }
-  })
-  res.sendStatus(200);
+  editCategory(req, res);
 })
 
 app.post("/edit-question", async (req, res) => {
-  let id = req.body.id;
-  let question= req.body.question;
-  let choices = req.body.choices;
-  let answer = req.body.answer;
-  let category = req.body.category;
-
-  choices.forEach( async (choice) => {
-    await answerModel.findOneAndUpdate({_id : choice._id}, {value : choice.value});
-  })
-
-  let newAnswer = await answerModel.findOne({_id : answer._id}).exec();
-
-  let newCategory = await categoryModel.findOne({title : category}).exec();
-
-  questionModel.updateOne({_id : id}, {question : question, answer : newAnswer, category : newCategory}, function(err,res){
-    if (err){
-      console.log(err);
-    }
-  });
-  res.sendStatus(200);
+  editQuestion(req, res);
 })
 
 app.get("/categories", (req,res) => {
-  categoryModel.find({}, function(err, categories){
-    if (err){
-      console.log(err);
-    }
-    else{
-      res.json(categories);
-    }
-  });
+  getCategories(req, res);
 })
 
 const port = process.env.PORT || 7777
